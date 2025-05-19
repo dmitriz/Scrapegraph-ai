@@ -5,7 +5,6 @@ import json
 from typing import List, Optional
 from langchain_openai import ChatOpenAI, AzureChatOpenAI
 import pandas as pd
-import requests
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.documents import Document
 from ..utils.cleanup_html import cleanup_html
@@ -13,6 +12,7 @@ from ..docloaders import ChromiumLoader
 from ..utils.convert_to_md import convert_to_md
 from ..utils.logging import get_logger
 from .base_node import BaseNode
+from security import safe_requests
 
 class FetchNode(BaseNode):
     """
@@ -248,7 +248,7 @@ class FetchNode(BaseNode):
 
         self.logger.info(f"--- (Fetching HTML from: {source}) ---")
         if self.use_soup:
-            response = requests.get(source)
+            response = safe_requests.get(source)
             if response.status_code == 200:
                 if not response.text.strip():
                     raise ValueError("No HTML body content found in the response.")

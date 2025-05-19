@@ -5,8 +5,8 @@ import re
 from typing import List
 from langchain_community.tools import DuckDuckGoSearchResults
 from googlesearch import search as google_search
-import requests
 from bs4 import BeautifulSoup
+from security import safe_requests
 
 def search_on_web(query: str, search_engine: str = "Google", 
                   max_results: int = 10, port: int = 8080) -> List[str]:
@@ -48,7 +48,7 @@ def search_on_web(query: str, search_engine: str = "Google",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
         search_url = f"https://www.bing.com/search?q={query}"
-        response = requests.get(search_url, headers=headers)
+        response = safe_requests.get(search_url, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -62,7 +62,7 @@ def search_on_web(query: str, search_engine: str = "Google",
         url = f"http://localhost:{port}"
         params = {"q": query, "format": "json"}
 
-        response = requests.get(url, params=params)
+        response = safe_requests.get(url, params=params)
 
         data = response.json()
         limited_results = data["results"][:max_results]

@@ -2,8 +2,8 @@
 Scrape_do module
 """
 import urllib.parse
-import requests
 import urllib3
+from security import safe_requests
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -32,10 +32,10 @@ def scrape_do_fetch(token, target_url, use_proxy=False, geoCode=None, super_prox
         }
         # Add optional geoCode and super proxy parameters if provided
         params = {"geoCode": geoCode, "super": str(super_proxy).lower()} if geoCode else {}
-        response = requests.get(target_url, proxies=proxies, verify=False, params=params)
+        response = safe_requests.get(target_url, proxies=proxies, verify=False, params=params)
     else:
         # API Mode URL
         url = f"http://api.scrape.do?token={token}&url={encoded_url}"
-        response = requests.get(url)
+        response = safe_requests.get(url)
 
     return response.text
