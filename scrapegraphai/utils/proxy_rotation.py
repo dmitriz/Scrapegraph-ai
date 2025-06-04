@@ -3,12 +3,12 @@ Module for rotating proxies
 """
 
 import ipaddress
-import random
 import re
 from typing import List, Optional, Set, TypedDict
 import requests
 from fp.errors import FreeProxyException
 from fp.fp import FreeProxy
+import secrets
 
 class ProxyBrokerCriteria(TypedDict, total=False):
     """proxy broker criteria"""
@@ -79,7 +79,7 @@ def search_proxy_servers(
 
     def search_all(proxybroker: FreeProxy, k: int, search_outside: bool) -> List[str]:
         candidateset = proxybroker.get_proxy_list(search_outside)
-        random.shuffle(candidateset)
+        secrets.SystemRandom().shuffle(candidateset)
 
         positive = set()
 
